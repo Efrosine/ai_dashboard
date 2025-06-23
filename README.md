@@ -84,10 +84,27 @@ The AI Dashboard provides two main functionalities:
 ├── server/                     # Backend application
 │   ├── server.js              # Main server file
 │   ├── db.js                  # Database connection
+│   ├── migrate.js             # Database migration script
+│   ├── seed.js                # Database seeding script
 │   ├── controllers/           # API controllers
 │   │   ├── scrapedResult.js   # Scraped data management
 │   │   ├── message.js         # WebSocket messaging
 │   │   └── channel.js         # Channel management
+│   ├── models/                # Database models
+│   │   ├── index.js           # Model exports
+│   │   ├── Users.js           # User model
+│   │   ├── Locations.js       # Location model
+│   │   ├── SuspectedAccounts.js # Suspected account model
+│   │   ├── DummyAccounts.js   # Dummy account model
+│   │   ├── ScrapedData.js     # Scraped data model
+│   │   ├── ScrapedResult.js   # Scraped result model
+│   │   ├── ScrapedDataResult.js # Scraped data result model
+│   │   ├── SocialDetentionResults.js # Social detection model
+│   │   ├── CCTV.js            # CCTV camera model
+│   │   └── CCTVDetectionResults.js # CCTV detection model
+│   └── orm/                   # ORM utilities
+│       ├── migrator.js        # Database migration handler
+│       └── seeder.js          # Database seeding handler
 ├── sql/                       # Database schema
 │   └── schema.sql             # Table definitions
 └── test/                      # Testing framework

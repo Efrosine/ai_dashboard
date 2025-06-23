@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Dashboard - Monitoring & Configuration</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-base-100 text-base-content">
+    <!-- Navigation -->
+    <div class="navbar bg-base-200">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              ></path>
+            </svg>
+          </div>
+          <ul
+            tabindex="0"
+            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <li><a href="#social-media">Social Media</a></li>
+            <li><a href="#cctv">CCTV Monitoring</a></li>
+            <li><a href="#admin">Admin Panel</a></li>
+          </ul>
+        </div>
+        <a class="btn btn-ghost text-xl">🤖 AI Dashboard</a>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          <li><a href="#social-media">Social Media</a></li>
+          <li><a href="#cctv">CCTV Monitoring</a></li>
+          <li><a href="#admin">Admin Panel</a></li>
+        </ul>
+      </div>
+      <div class="navbar-end">
+        <div class="indicator">
+          <span
+            id="connection-indicator"
+            class="indicator-item badge badge-error"
+            >Offline</span
+          >
+          <div class="btn btn-ghost">Status</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-4">
+      <!-- Hero Section -->
+      <div class="hero bg-base-200 rounded-lg mb-8">
+        <div class="hero-content text-center">
+          <div class="max-w-md">
+            <h1 class="text-5xl font-bold">AI Dashboard</h1>
+            <p class="py-6">
+              Monitoring and Configuration Dashboard for Social Media Scraping
+              and AI CCTV Detection
+            </p>
+            <button id="test-connection-btn" class="btn btn-primary">
+              Test Connection
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Media Section -->
+      <section id="social-media" class="mb-8">
+        <h2 class="text-3xl font-bold mb-4">📱 Social Media Monitoring</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="card-title">Scraping Control</h3>
+              <p>Configure and initiate social media scraping operations</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-primary">Configure</button>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="card-title">Analysis Results</h3>
+              <p>View analyzed social media content and detection results</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-secondary">View Results</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CCTV Section -->
+      <section id="cctv" class="mb-8">
+        <h2 class="text-3xl font-bold mb-4">📹 CCTV Monitoring</h2>
+        <div
+          id="cctv-container"
+          class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"
+        >
+          <!-- CCTV feeds will be dynamically loaded here -->
+        </div>
+      </section>
+
+      <!-- Admin Section -->
+      <section id="admin" class="mb-8">
+        <h2 class="text-3xl font-bold mb-4">⚙️ Admin Panel</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="card-title">Dummy Accounts</h3>
+              <p>Manage dummy social media accounts</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-outline">Manage</button>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="card-title">CCTV Cameras</h3>
+              <p>Add and configure CCTV cameras</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-outline">Configure</button>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-base-200">
+            <div class="card-body">
+              <h3 class="card-title">Target Locations</h3>
+              <p>Manage monitored locations and accounts</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-outline">Manage</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- System Status -->
+      <section id="system-status" class="mb-8">
+        <h2 class="text-3xl font-bold mb-4">📊 System Status</h2>
+        <div id="system-stats" class="stats shadow">
+          <div class="stat">
+            <div class="stat-title">WebSocket Status</div>
+            <div id="ws-status" class="stat-value text-error">Disconnected</div>
+            <div class="stat-desc">Real-time connection</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Last Update</div>
+            <div id="last-update" class="stat-value text-sm">Never</div>
+            <div class="stat-desc">System activity</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Active Feeds</div>
+            <div id="active-feeds" class="stat-value">0</div>
+            <div class="stat-desc">CCTV cameras online</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Real-time Messages -->
+      <section id="messages" class="mb-8">
+        <h2 class="text-3xl font-bold mb-4">📨 Real-time Messages</h2>
+        <div class="mockup-code bg-base-200">
+          <div id="message-log" class="max-h-64 overflow-y-auto">
+            <pre
+              data-prefix=">"
+              class="text-info"
+            ><code>System initialized...</code></pre>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-4 bg-base-200 text-base-content">
+      <div>
+        <p>AI Dashboard v1.0.0 - Phase 1: Environment Setup</p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="utils/api.js"></script>
+    <script src="utils/helper.js"></script>
+    <script src="components/liveCCTV.js"></script>
+    <script src="components/analysisResult.js"></script>
+    <script src="components/dummyAccountForm.js"></script>
+    <script src="components/locationList.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

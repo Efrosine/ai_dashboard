@@ -1,0 +1,89 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ai_dashboard_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_EXTERNAL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - ai_dashboard_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: ai_dashboard_server
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - API_PORT=${API_PORT}
+      - WEBSOCKET_PORT=${WEBSOCKET_PORT}
+    ports:
+      - "${SERVER_EXTERNAL_PORT:-3000}:3000"
+      - "${WEBSOCKET_EXTERNAL_PORT:-8080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./server:/app/server
+      - ./sql:/app/sql
+    networks:
+      - ai_dashboard_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: ai_dashboard_frontend
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT:-80}:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    networks:
+      - ai_dashboard_network
+    restart: unless-stopped
+    depends_on:
+      - server
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: ai_dashboard_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_ARBITRARY: 1
+    ports:
+      - "${PHPMYADMIN_EXTERNAL_PORT:-8081}:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ai_dashboard_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  ai_dashboard_network:
+    driver: bridge
