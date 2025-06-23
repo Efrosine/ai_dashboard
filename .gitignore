@@ -1,0 +1,117 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.docker
+
+# Logs
+logs/
+*.log
+log/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output/
+
+# Test results and temporary files
+test/results.json
+test/*/results.json
+test/phase*/results.json
+.tmp/
+temp/
+tmp/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+database.db
+data/
+db_data/
+mysql_data/
+postgres_data/
+
+# Docker
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+.docker/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*~
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.cache/
+public/build/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Security and sensitive files
+*.key
+*.pem
+*.p12
+*.crt
+*.csr
+config/local.json
+secrets/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Application specific
+uploads/
+static/uploads/
+media/
+images/uploads/
+cache/
+sessions/
+
+# Lock files (uncomment if you want to ignore them)
+# package-lock.json
+# yarn.lock
+
+# Monitoring and analytics
+*.monitoring
+analytics/
+metrics/

@@ -1,0 +1,46 @@
+{
+  "name": "ai-dashboard-server",
+  "version": "1.0.0",
+  "description": "AI Dashboard Server with ORM, WebSocket, and API endpoints",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "migrate": "node server/migrate.js",
+    "migrate:flush": "node server/migrate.js --flush",
+    "migrate:down": "node server/migrate.js --down",
+    "migrate:status": "node server/migrate.js --status",
+    "seed": "node server/seed.js",
+    "seed:clear": "node server/seed.js --clear",
+    "seed:counts": "node server/seed.js --counts",
+    "test": "mocha test/**/*.test.js --reporter json > test/results.json && mocha test/**/*.test.js",
+    "test:phase1": "mocha test/phase1/*.test.js --reporter json > test/phase1/results.json && mocha test/phase1/*.test.js",
+    "test:phase2": "mocha test/phase2/*.test.js --reporter json > test/phase2/results.json && mocha test/phase2/*.test.js",
+    "test:phase3": "mocha test/phase3/*.test.js --reporter json > test/phase3/results.json && mocha test/phase3/*.test.js",
+    "test:phase4": "mocha test/phase4/*.test.js --reporter json > test/phase4/results.json && mocha test/phase4/*.test.js",
+    "test:phase5": "mocha test/phase5/*.test.js --reporter json > test/phase5/results.json && mocha test/phase5/*.test.js",
+    "test:phase6": "mocha test/phase6/*.test.js --reporter json > test/phase6/results.json && mocha test/phase6/*.test.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.0",
+    "ws": "^8.14.2",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "mocha": "^10.2.0",
+    "chai": "^4.3.8",
+    "chai-http": "^4.4.0"
+  },
+  "keywords": [
+    "ai",
+    "dashboard",
+    "cctv",
+    "social-media",
+    "monitoring"
+  ],
+  "author": "AI Dashboard Team",
+  "license": "MIT"
+}
