@@ -25,15 +25,16 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "mysql2": "^3.6.0",
-    "ws": "^8.14.2"
+    "mysql2": "^3.6.0"
   },
   "devDependencies": {
+    "axios": "^1.10.0",
     "chai": "^4.5.0",
     "chai-http": "^4.4.0",
     "jsdom": "^26.1.0",
     "mocha": "^10.8.2",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "ws": "^8.18.2"
   },
   "keywords": [
     "ai",

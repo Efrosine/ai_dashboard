@@ -12,6 +12,8 @@ const db = require("./db");
 const scrapedResultController = require("./controllers/scrapedResult");
 const messageController = require("./controllers/message");
 const channelController = require("./controllers/channel");
+const cctvController = require("./controllers/cctv");
+const dataController = require("./controllers/data");
 
 const app = express();
 const server = http.createServer(app);
@@ -31,6 +33,8 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use("/api/scraped-results", scrapedResultController);
 app.use("/api/messages", messageController);
 app.use("/api/channels", channelController);
+app.use("/api/cctv", cctvController);
+app.use("/api/data", dataController);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -60,12 +64,33 @@ wss.on("connection", (ws, req) => {
       const message = JSON.parse(data);
       console.log("Received WebSocket message:", message);
 
-      // Echo message back to all clients (for testing)
-      broadcastMessage({
-        type: "echo",
-        originalMessage: message,
-        timestamp: new Date().toISOString(),
-      });
+      // Handle different message types
+      switch (message.type) {
+        case "subscribe":
+          handleSubscription(ws, message);
+          break;
+        case "unsubscribe":
+          handleUnsubscription(ws, message);
+          break;
+        case "ping":
+          ws.send(
+            JSON.stringify({
+              type: "pong",
+              timestamp: new Date().toISOString(),
+            })
+          );
+          break;
+        case "request_status":
+          sendStatusUpdate(ws);
+          break;
+        default:
+          // Echo message back to all clients (for testing)
+          broadcastMessage({
+            type: "echo",
+            originalMessage: message,
+            timestamp: new Date().toISOString(),
+          });
+      }
     } catch (error) {
       console.error("Error parsing WebSocket message:", error);
       ws.send(
@@ -98,8 +123,106 @@ function broadcastMessage(message) {
   });
 }
 
-// Make broadcast function available globally
+// Handle WebSocket subscriptions
+function handleSubscription(ws, message) {
+  const { channel } = message;
+  if (!ws.subscriptions) {
+    ws.subscriptions = new Set();
+  }
+  ws.subscriptions.add(channel);
+
+  ws.send(
+    JSON.stringify({
+      type: "subscription_confirmed",
+      channel,
+      timestamp: new Date().toISOString(),
+    })
+  );
+
+  console.log(`Client subscribed to channel: ${channel}`);
+}
+
+// Handle WebSocket unsubscriptions
+function handleUnsubscription(ws, message) {
+  const { channel } = message;
+  if (ws.subscriptions) {
+    ws.subscriptions.delete(channel);
+  }
+
+  ws.send(
+    JSON.stringify({
+      type: "unsubscription_confirmed",
+      channel,
+      timestamp: new Date().toISOString(),
+    })
+  );
+
+  console.log(`Client unsubscribed from channel: ${channel}`);
+}
+
+// Send status update to a specific client
+async function sendStatusUpdate(ws) {
+  try {
+    // Get system status
+    const [cctvCount] = await db.execute("SELECT COUNT(*) as count FROM cctv");
+    const [scrapedCount] = await db.execute(
+      "SELECT COUNT(*) as count FROM scraped_result"
+    );
+    const [detectionCount] = await db.execute(
+      "SELECT COUNT(*) as count FROM cctv_detection_results WHERE DATE(timestamp) = CURDATE()"
+    );
+    const [analysisCount] = await db.execute(
+      "SELECT COUNT(*) as count FROM social_detection_results"
+    );
+
+    const status = {
+      type: "status_update",
+      data: {
+        cctv_cameras: cctvCount[0].count,
+        scraped_results: scrapedCount[0].count,
+        today_detections: detectionCount[0].count,
+        analysis_results: analysisCount[0].count,
+        server_uptime: process.uptime(),
+        connected_clients: wss.clients.size,
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    ws.send(JSON.stringify(status));
+  } catch (error) {
+    console.error("Error sending status update:", error);
+    ws.send(
+      JSON.stringify({
+        type: "error",
+        message: "Failed to get status update",
+        timestamp: new Date().toISOString(),
+      })
+    );
+  }
+}
+
+// Function to broadcast to specific channel subscribers
+function broadcastToChannel(channel, message) {
+  wss.clients.forEach((client) => {
+    if (
+      client.readyState === WebSocket.OPEN &&
+      client.subscriptions &&
+      client.subscriptions.has(channel)
+    ) {
+      client.send(
+        JSON.stringify({
+          ...message,
+          channel,
+          timestamp: new Date().toISOString(),
+        })
+      );
+    }
+  });
+}
+
+// Make broadcast functions available globally
 global.broadcastMessage = broadcastMessage;
+global.broadcastToChannel = broadcastToChannel;
 
 // Error handling middleware
 app.use((error, req, res, next) => {
