@@ -16,10 +16,6 @@ class Seeder {
     try {
       console.log(`🌱 Seeding table: ${model.name}`);
 
-      // Clear existing data first
-      await this.db.execute(`DELETE FROM \`${model.name}\``);
-      console.log(`🗑️ Cleared existing data from ${model.name}`);
-
       // Get column names from first seed object
       const columns = Object.keys(model.seed[0]);
       const placeholders = columns.map(() => "?").join(", ");
@@ -51,6 +47,11 @@ class Seeder {
 
   async seedAll() {
     console.log("🌱 Starting database seeding...");
+
+    // First clear all data in reverse order to respect foreign keys
+    console.log("🗑️ Clearing existing data in proper order...");
+    await this.clearAll();
+
     const modelsInOrder = this.models.getCreationOrder();
 
     try {

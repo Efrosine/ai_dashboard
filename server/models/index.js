@@ -3,7 +3,7 @@ const ScrapedData = require("./ScrapedData");
 const ScrapedResult = require("./ScrapedResult");
 const SuspectedAccounts = require("./SuspectedAccounts");
 const Locations = require("./Locations");
-const SocialDetentionResults = require("./SocialDetentionResults");
+const SocialDetectionResults = require("./SocialDetectionResults");
 const CCTV = require("./CCTV");
 const CCTVDetectionResults = require("./CCTVDetectionResults");
 const DummyAccounts = require("./DummyAccounts");
@@ -21,7 +21,7 @@ module.exports = {
   DummyAccounts,
   Users,
   // Tables with foreign keys second
-  SocialDetentionResults,
+  SocialDetectionResults,
   CCTVDetectionResults,
   ScrapedDataResult,
 
@@ -34,7 +34,7 @@ module.exports = {
     CCTV,
     DummyAccounts,
     Users,
-    SocialDetentionResults,
+    SocialDetectionResults,
     CCTVDetectionResults,
     ScrapedDataResult,
   ],
@@ -43,7 +43,7 @@ module.exports = {
   getDropOrder: () => [
     ScrapedDataResult,
     CCTVDetectionResults,
-    SocialDetentionResults,
+    SocialDetectionResults,
     Users,
     DummyAccounts,
     CCTV,

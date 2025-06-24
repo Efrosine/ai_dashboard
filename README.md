@@ -99,16 +99,21 @@ The AI Dashboard provides two main functionalities:
 │   │   ├── ScrapedData.js     # Scraped data model
 │   │   ├── ScrapedResult.js   # Scraped result model
 │   │   ├── ScrapedDataResult.js # Scraped data result model
-│   │   ├── SocialDetentionResults.js # Social detection model
+│   │   ├── SocialDetectionResults.js # Social detection results model
 │   │   ├── CCTV.js            # CCTV camera model
-│   │   └── CCTVDetectionResults.js # CCTV detection model
-│   └── orm/                   # ORM utilities
-│       ├── migrator.js        # Database migration handler
-│       └── seeder.js          # Database seeding handler
-├── sql/                       # Database schema
-│   └── schema.sql             # Table definitions
-└── test/                      # Testing framework
-    ├── phase1/                # Phase 1 tests
+│   │   └── CCTVDetectionResults.js # CCTV detection results model
+│   └── orm/                   # ORM and database utilities
+│       ├── migrator.js        # Database migration tool
+│       └── seeder.js          # Database seeding tool
+├── sql/                       # SQL schemas
+│   └── schema.sql             # Reference database schema
+└── test/                      # Testing infrastructure
+    ├── phase1/                # Environment setup tests
+    ├── phase2/                # Database design tests
+    ├── phase3/                # Frontend implementation tests
+    ├── phase4/                # Integration tests
+    ├── phase5/                # Workflow validation tests
+    ├── phase6/                # Finalization tests
     └── docs/                  # Test documentation
 ```
 
@@ -121,9 +126,14 @@ The AI Dashboard provides two main functionalities:
 npm test
 
 # Run specific phase tests
-npm run test:phase1
-npm run test:phase2
-# ... etc
+npm run test:phase1  # Environment setup tests
+npm run test:phase2  # Database design tests
+# Additional phases available as development progresses
+
+# Database operations
+npm run migrate      # Run database migrations
+npm run seed         # Seed database with test data
+npm run migrate:fresh # Fresh migration (drop and recreate all tables)
 ```
 
 ### Development Mode
@@ -220,21 +230,30 @@ GET /api/channels                # Get available channels
 
 ### Core Tables
 
-- **users** - Dashboard user accounts
-- **locations** - Target monitoring locations
-- **suspected_accounts** - Accounts under surveillance
-- **dummy_accounts** - Scraping account credentials
+- **users** - Dashboard user accounts with role-based access
+- **locations** - Target monitoring locations for scraping
+- **suspected_accounts** - Social media accounts under surveillance (Instagram, X, TikTok)
+- **dummy_accounts** - Scraping operation account credentials
 
 ### Data Tables
 
-- **scraped_data** - Scraping operation tracking
-- **scraped_result** - Raw scraped content
-- **social_detention_results** - AI analysis results
+- **scraped_data** - Scraping operation tracking with status
+- **scraped_result** - Raw scraped social media content
+- **social_detection_results** - AI analysis results (corrected table name)
+- **scraped_data_result** - Junction table for many-to-many relationships
 
 ### CCTV Tables
 
-- **cctv** - Camera configuration
-- **cctv_detection_results** - Detection events
+- **cctv** - Camera configuration and streaming URLs
+- **cctv_detection_results** - AI detection events and snapshots
+
+### Schema Improvements (Phase 2)
+
+- ✅ Corrected table name: `social_detection_results` (was `social_detention_results`)
+- ✅ Removed unnecessary foreign key: `scraped_data_id` from `scraped_result`
+- ✅ Updated platform enums to support only active platforms: Instagram, X, TikTok
+- ✅ Simplified JSON data storage for AI analysis results
+- ✅ Optimized indexes for better query performance
 
 ## 🧪 Testing
 
@@ -256,19 +275,26 @@ The project includes a comprehensive testing framework organized by development 
 - WebSocket communication
 - Testing framework
 
-### 🔄 Phase 2: Database Design (Next)
+### ✅ Phase 2: Database Design
 
-- ORM implementation
-- Database migrations
-- Seed data
-- Model definitions
+- ORM implementation with 10 database models
+- Database migrations with foreign key relationships
+- Comprehensive seed data (39 records across all tables)
+- Schema corrections and optimization
+- Complete testing framework (15/15 tests passed)
+
+### 🔄 Phase 3: Frontend Implementation (Next)
+
+- HTML/CSS layout with daisyUI components
+- Modular JavaScript components
+- Dynamic rendering for CCTV feeds and analysis results
+- Real-time WebSocket integration
 
 ### 📅 Future Phases
 
-- Frontend implementation
-- API integration
-- Testing & validation
-- Production deployment
+- Phase 4: Integration (API endpoints, WebSocket communication)
+- Phase 5: Testing & Validation (End-to-end workflows)
+- Phase 6: Finalization (UI polish, documentation, deployment)
 
 ## 🔐 Security Considerations
 
@@ -300,5 +326,5 @@ For support and questions:
 
 ---
 
-**Current Status**: Phase 1 Complete ✅
-**Next Milestone**: Phase 2 - Database Implementation
+**Current Status**: Phase 2 Complete ✅  
+**Next Milestone**: Phase 3 - Frontend Implementation

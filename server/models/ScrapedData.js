@@ -4,12 +4,33 @@ module.exports = {
   schema: `
     id INT AUTO_INCREMENT PRIMARY KEY,
     input_query VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    query_type ENUM('account', 'location', 'account_list', 'location_list') NOT NULL,
+    status ENUM('pending', 'processing', 'completed', 'failed') DEFAULT 'pending',
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_query_type (query_type),
+    INDEX idx_status (status),
+    INDEX idx_timestamp (timestamp)
   `,
   seed: [
-    { input_query: "test_query_1" },
-    { input_query: "test_query_2" },
-    { input_query: "social_media_scrape_location_nyc" },
-    { input_query: "instagram_account_monitoring" },
+    {
+      input_query: "@test_user_01",
+      query_type: "account",
+      status: "completed",
+    },
+    {
+      input_query: "New York City, Times Square",
+      query_type: "location",
+      status: "completed",
+    },
+    {
+      input_query: "suspected_accounts_list",
+      query_type: "account_list",
+      status: "pending",
+    },
+    {
+      input_query: "target_locations_list",
+      query_type: "location_list",
+      status: "processing",
+    },
   ],
 };

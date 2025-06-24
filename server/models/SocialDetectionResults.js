@@ -17,13 +17,12 @@ module.exports = {
         analysis_type: "violence_detection",
         confidence: 0.85,
         flags: ["potential_violence", "aggressive_language"],
-        detected_content:
-          "Aggressive language and potential threat indicators detected",
+        detected_content: "Aggressive language and potential threat indicators detected",
         risk_level: "high",
         keywords: ["fight", "attack", "violence"],
         sentiment: "negative",
-        recommended_action: "immediate_review",
-      }),
+        recommended_action: "immediate_review"
+      })
     },
     {
       scraped_id: 2,
@@ -31,13 +30,12 @@ module.exports = {
         analysis_type: "content_analysis",
         confidence: 0.65,
         flags: ["suspicious_activity", "unusual_posting"],
-        detected_content:
-          "Unusual posting pattern with location-specific content",
-        risk_level: "medium",
+        detected_content: "Unusual posting pattern with location-specific content",
+        risk_level: "medium", 
         keywords: ["protest", "gathering", "downtown"],
         sentiment: "neutral",
-        recommended_action: "monitor",
-      }),
-    },
+        recommended_action: "monitor"
+      })
+    }
   ],
 };
