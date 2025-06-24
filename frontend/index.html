@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="AI Monitoring & Configuration Dashboard for Social Media Scraping and CCTV Detection"
+    />
     <title>AI Dashboard - Monitoring & Configuration</title>
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
@@ -11,10 +16,26 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>"
+    />
   </head>
-  <body class="bg-base-100 text-base-content">
+  <body class="bg-base-100 text-base-content min-h-screen">
+    <!-- Loading overlay -->
+    <div
+      id="loading-overlay"
+      class="fixed inset-0 bg-base-300 bg-opacity-90 z-50 flex items-center justify-center"
+    >
+      <div class="text-center">
+        <div class="loading loading-spinner loading-lg text-primary mb-4"></div>
+        <p class="text-lg font-medium">Initializing AI Dashboard...</p>
+      </div>
+    </div>
+
     <!-- Navigation -->
-    <div class="navbar bg-base-200">
+    <header>
+      <nav class="navbar bg-base-200 shadow-sm sticky top-0 z-40">
       <div class="navbar-start">
         <div class="dropdown">
           <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -36,18 +57,40 @@
             tabindex="0"
             class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <li><a href="#social-media">Social Media</a></li>
-            <li><a href="#cctv">CCTV Monitoring</a></li>
-            <li><a href="#admin">Admin Panel</a></li>
+            <li>
+              <a href="#social-media" class="flex items-center gap-2"
+                >📱 Social Media</a
+              >
+            </li>
+            <li>
+              <a href="#cctv" class="flex items-center gap-2"
+                >📹 CCTV Monitoring</a
+              >
+            </li>
+            <li>
+              <a href="#admin" class="flex items-center gap-2"
+                >⚙️ Admin Panel</a
+              >
+            </li>
           </ul>
         </div>
-        <a class="btn btn-ghost text-xl">🤖 AI Dashboard</a>
+        <a class="btn btn-ghost text-xl font-bold">🤖 AI Dashboard</a>
       </div>
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li><a href="#social-media">Social Media</a></li>
-          <li><a href="#cctv">CCTV Monitoring</a></li>
-          <li><a href="#admin">Admin Panel</a></li>
+          <li>
+            <a href="#social-media" class="flex items-center gap-2"
+              >📱 Social Media</a
+            >
+          </li>
+          <li>
+            <a href="#cctv" class="flex items-center gap-2"
+              >📹 CCTV Monitoring</a
+            >
+          </li>
+          <li>
+            <a href="#admin" class="flex items-center gap-2">⚙️ Admin Panel</a>
+          </li>
         </ul>
       </div>
       <div class="navbar-end">
@@ -57,48 +100,238 @@
             class="indicator-item badge badge-error"
             >Offline</span
           >
-          <div class="btn btn-ghost">Status</div>
+          <button id="connection-status-btn" class="btn btn-ghost btn-sm">
+            <div class="flex items-center gap-2">
+              <div
+                id="connection-icon"
+                class="w-2 h-2 rounded-full bg-error"
+              ></div>
+              <span class="hidden sm:inline">Status</span>
+            </div>
+          </button>
         </div>
-      </div>
-    </div>
+
+        <!-- Theme controller -->
+        <label class="swap swap-rotate btn btn-ghost btn-sm">
+          <input type="checkbox" class="theme-controller" value="dark" />
+          <svg
+            class="swap-off h-5 w-5 fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
+            />
+          </svg>
+          <svg
+            class="swap-on h-5 w-5 fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"
+            />
+          </svg>
+        </label>      </nav>
+    </header>
 
     <!-- Main Content -->
-    <div class="container mx-auto p-4">
+    <main class="container mx-auto p-4 sm:p-6 md:p-8 max-w-7xl">
       <!-- Hero Section -->
-      <div class="hero bg-base-200 rounded-lg mb-8">
+      <div
+        class="hero bg-gradient-to-r from-primary to-secondary text-primary-content rounded-lg mb-8 min-h-[200px]"
+      >
         <div class="hero-content text-center">
           <div class="max-w-md">
-            <h1 class="text-5xl font-bold">AI Dashboard</h1>
-            <p class="py-6">
-              Monitoring and Configuration Dashboard for Social Media Scraping
-              and AI CCTV Detection
+            <h1 class="text-5xl font-bold mb-4">🤖 AI Dashboard</h1>
+            <p class="py-6 text-lg">
+              Advanced monitoring and configuration dashboard for Social Media
+              Scraping and AI-powered CCTV Detection systems
             </p>
-            <button id="test-connection-btn" class="btn btn-primary">
+            <button id="test-connection-btn" class="btn btn-accent btn-lg">
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                ></path>
+              </svg>
               Test Connection
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Social Media Section -->
-      <section id="social-media" class="mb-8">
-        <h2 class="text-3xl font-bold mb-4">📱 Social Media Monitoring</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="card bg-base-200">
-            <div class="card-body">
-              <h3 class="card-title">Scraping Control</h3>
-              <p>Configure and initiate social media scraping operations</p>
-              <div class="card-actions justify-end">
-                <button class="btn btn-primary">Configure</button>
+      <!-- Quick Stats -->
+      <div class="stats shadow w-full mb-8 bg-base-200 stats-vertical sm:stats-horizontal">
+        <div class="stat">
+          <div class="stat-figure text-primary">
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="stat-title">Total Analyses</div>
+          <div id="total-analyses" class="stat-value text-primary">0</div>
+          <div class="stat-desc">Social media posts analyzed</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-figure text-secondary">
+            <svg
+              class="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="stat-title">Active Cameras</div>
+          <div id="active-cameras" class="stat-value text-secondary">0</div>
+          <div class="stat-desc">CCTV feeds online</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-figure text-accent">
+            <div class="avatar online">
+              <div class="w-12 rounded-full">
+                <div
+                  class="bg-accent text-accent-content w-full h-full flex items-center justify-center text-xl"
+                >
+                  🛡️
+                </div>
               </div>
             </div>
           </div>
-          <div class="card bg-base-200">
+          <div class="stat-title">Threat Level</div>
+          <div id="threat-level" class="stat-value text-accent">Low</div>
+          <div class="stat-desc">Current security status</div>
+        </div>
+      </div>
+
+      <!-- Social Media Section -->
+      <section id="social-media" class="mb-8">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          📱 Social Media Monitoring
+          <div class="badge badge-outline badge-sm">Real-time</div>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+          <div class="card bg-base-200 shadow-lg">
             <div class="card-body">
-              <h3 class="card-title">Analysis Results</h3>
-              <p>View analyzed social media content and detection results</p>
-              <div class="card-actions justify-end">
-                <button class="btn btn-secondary">View Results</button>
+              <h3 class="card-title text-lg flex items-center gap-2">
+                🎯 Scraping Control
+                <div class="badge badge-primary badge-sm">Active</div>
+              </h3>
+              <p class="text-sm text-base-content/70">
+                Configure and initiate social media scraping operations
+              </p>
+              <div class="card-actions justify-end mt-4">
+                <button
+                  id="configure-scraping-btn"
+                  class="btn btn-primary btn-sm"
+                >
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  Configure
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-base-200 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title text-lg flex items-center gap-2">
+                📊 Analysis Results
+                <div class="badge badge-secondary badge-sm">AI-Powered</div>
+              </h3>
+              <p class="text-sm text-base-content/70">
+                View analyzed social media content and detection results
+              </p>
+              <div class="card-actions justify-end mt-4">
+                <button id="view-results-btn" class="btn btn-secondary btn-sm">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    ></path>
+                  </svg>
+                  View Results
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-base-200 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title text-lg flex items-center gap-2">
+                🚨 Threat Analysis
+                <div class="badge badge-warning badge-sm">Live</div>
+              </h3>
+              <p class="text-sm text-base-content/70">
+                Real-time threat detection and security analysis
+              </p>
+              <div class="card-actions justify-end mt-4">
+                <button id="threat-analysis-btn" class="btn btn-warning btn-sm">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    ></path>
+                  </svg>
+                  Analyze
+                </button>
               </div>
             </div>
           </div>
@@ -107,43 +340,175 @@
 
       <!-- CCTV Section -->
       <section id="cctv" class="mb-8">
-        <h2 class="text-3xl font-bold mb-4">📹 CCTV Monitoring</h2>
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          📹 CCTV Monitoring
+          <div class="badge badge-outline badge-sm">Live Feeds</div>
+        </h2>
         <div
           id="cctv-container"
-          class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
         >
           <!-- CCTV feeds will be dynamically loaded here -->
+          <div class="skeleton h-64 w-full rounded-lg"></div>
+          <div class="skeleton h-64 w-full rounded-lg"></div>
+          <div class="skeleton h-64 w-full rounded-lg"></div>
+        </div>
+
+        <!-- CCTV Controls -->
+        <div class="mt-6 flex flex-wrap gap-2 sm:gap-4 justify-center">
+          <button id="add-camera-btn" class="btn btn-primary btn-sm sm:btn-md">
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Add Camera
+          </button>
+          <button id="refresh-feeds-btn" class="btn btn-secondary btn-sm sm:btn-md">
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            Refresh
+          </button>
+          <button id="fullscreen-mode-btn" class="btn btn-accent btn-sm sm:btn-md">
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+              ></path>
+            </svg>
+            Fullscreen
+          </button>
         </div>
       </section>
 
       <!-- Admin Section -->
       <section id="admin" class="mb-8">
-        <h2 class="text-3xl font-bold mb-4">⚙️ Admin Panel</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div class="card bg-base-200">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          ⚙️ Admin Panel
+          <div class="badge badge-outline badge-sm">Management</div>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div class="card bg-base-200 shadow-lg">
             <div class="card-body">
-              <h3 class="card-title">Dummy Accounts</h3>
-              <p>Manage dummy social media accounts</p>
-              <div class="card-actions justify-end">
-                <button class="btn btn-outline">Manage</button>
+              <h3 class="card-title text-lg flex items-center gap-2">
+                🔑 Dummy Accounts
+                <div class="badge badge-info badge-sm">Social</div>
+              </h3>
+              <p class="text-sm text-base-content/70">
+                Manage dummy social media accounts for scraping
+              </p>
+              <div class="card-actions justify-end mt-4">
+                <button id="manage-accounts-btn" class="btn btn-outline btn-sm">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                    ></path>
+                  </svg>
+                  Manage
+                </button>
               </div>
             </div>
           </div>
-          <div class="card bg-base-200">
+
+          <div class="card bg-base-200 shadow-lg">
             <div class="card-body">
-              <h3 class="card-title">CCTV Cameras</h3>
-              <p>Add and configure CCTV cameras</p>
-              <div class="card-actions justify-end">
-                <button class="btn btn-outline">Configure</button>
+              <h3 class="card-title text-lg flex items-center gap-2">
+                📹 CCTV Cameras
+                <div class="badge badge-success badge-sm">Hardware</div>
+              </h3>
+              <p class="text-sm text-base-content/70">
+                Add and configure CCTV cameras
+              </p>
+              <div class="card-actions justify-end mt-4">
+                <button
+                  id="configure-cameras-btn"
+                  class="btn btn-outline btn-sm"
+                >
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  Configure
+                </button>
               </div>
             </div>
           </div>
-          <div class="card bg-base-200">
+
+          <div class="card bg-base-200 shadow-lg">
             <div class="card-body">
-              <h3 class="card-title">Target Locations</h3>
-              <p>Manage monitored locations and accounts</p>
-              <div class="card-actions justify-end">
-                <button class="btn btn-outline">Manage</button>
+              <h3 class="card-title text-lg flex items-center gap-2">
+                📍 Target Locations
+                <div class="badge badge-warning badge-sm">Monitoring</div>
+              </h3>
+              <p class="text-sm text-base-content/70">
+                Manage monitored locations and accounts
+              </p>
+              <div class="card-actions justify-end mt-4">
+                <button id="manage-targets-btn" class="btn btn-outline btn-sm">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  Manage
+                </button>
               </div>
             </div>
           </div>
@@ -152,46 +517,269 @@
 
       <!-- System Status -->
       <section id="system-status" class="mb-8">
-        <h2 class="text-3xl font-bold mb-4">📊 System Status</h2>
-        <div id="system-stats" class="stats shadow">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          📊 System Status
+          <div class="badge badge-outline badge-sm">Real-time</div>
+        </h2>
+        <div id="system-stats" class="stats shadow w-full bg-base-200 stats-vertical md:stats-horizontal">
           <div class="stat">
+            <div class="stat-figure text-primary">
+              <div class="avatar online">
+                <div class="w-12 rounded-full">
+                  <div
+                    id="ws-status-avatar"
+                    class="bg-primary text-primary-content w-full h-full flex items-center justify-center text-xl"
+                  >
+                    🔗
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="stat-title">WebSocket Status</div>
             <div id="ws-status" class="stat-value text-error">Disconnected</div>
             <div class="stat-desc">Real-time connection</div>
           </div>
+
           <div class="stat">
+            <div class="stat-figure text-secondary">
+              <svg
+                class="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
             <div class="stat-title">Last Update</div>
             <div id="last-update" class="stat-value text-sm">Never</div>
             <div class="stat-desc">System activity</div>
           </div>
+
           <div class="stat">
+            <div class="stat-figure text-accent">
+              <svg
+                class="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </div>
             <div class="stat-title">Active Feeds</div>
             <div id="active-feeds" class="stat-value">0</div>
             <div class="stat-desc">CCTV cameras online</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-figure text-info">
+              <svg
+                class="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+            <div class="stat-title">System Health</div>
+            <div id="system-health" class="stat-value">Good</div>
+            <div class="stat-desc">Overall system status</div>
           </div>
         </div>
       </section>
 
       <!-- Real-time Messages -->
       <section id="messages" class="mb-8">
-        <h2 class="text-3xl font-bold mb-4">📨 Real-time Messages</h2>
-        <div class="mockup-code bg-base-200">
-          <div id="message-log" class="max-h-64 overflow-y-auto">
-            <pre
-              data-prefix=">"
-              class="text-info"
-            ><code>System initialized...</code></pre>
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+          📨 Real-time Messages
+          <div class="badge badge-outline badge-sm">Live Feed</div>
+          <button id="clear-messages-btn" class="btn btn-ghost btn-sm ml-auto">
+            <svg
+              class="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              ></path>
+            </svg>
+            Clear
+          </button>
+        </h2>
+        <div class="card bg-base-200 shadow-lg">
+          <div class="card-body">
+            <div class="mockup-code bg-base-300 border border-base-content/10">
+              <div
+                id="message-log"
+                class="max-h-64 overflow-y-auto p-4 space-y-1"
+              >
+                <div class="flex items-center gap-2 text-info">
+                  <span
+                    class="text-info-content bg-info px-2 py-1 rounded text-xs font-mono"
+                    >INFO</span
+                  >
+                  <span class="text-sm">System initialized successfully</span>
+                  <span
+                    class="text-xs text-base-content/50 ml-auto"
+                    id="init-timestamp"
+                  ></span>
+                </div>
+                <div class="flex items-center gap-2 text-warning">
+                  <span
+                    class="text-warning-content bg-warning px-2 py-1 rounded text-xs font-mono"
+                    >WARN</span
+                  >
+                  <span class="text-sm">WebSocket connection pending...</span>
+                  <span
+                    class="text-xs text-base-content/50 ml-auto"
+                    id="ws-timestamp"
+                  ></span>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center mt-4">
+              <div class="text-sm text-base-content/70">
+                <span id="message-count">2</span> messages • Auto-scroll:
+                <input
+                  type="checkbox"
+                  id="auto-scroll-toggle"
+                  class="toggle toggle-sm"
+                  checked
+                />
+              </div>
+              <div class="flex gap-2">
+                <button id="export-logs-btn" class="btn btn-ghost btn-sm">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  Export
+                </button>
+                <button id="pause-messages-btn" class="btn btn-ghost btn-sm">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  Pause
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-    </div>
+    </main>
 
     <!-- Footer -->
-    <footer class="footer footer-center p-4 bg-base-200 text-base-content">
-      <div>
-        <p>AI Dashboard v1.0.0 - Phase 1: Environment Setup</p>
+    <footer
+      class="footer footer-center p-4 sm:p-6 bg-base-200 text-base-content border-t border-base-300"
+    >
+      <div class="grid grid-flow-col gap-4">
+        <div class="flex items-center gap-2">
+          <div class="avatar">
+            <div class="w-8 rounded">
+              <div
+                class="bg-primary text-primary-content w-full h-full flex items-center justify-center text-lg"
+              >
+                🤖
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="font-bold">AI Dashboard v2.0.0</p>
+            <p class="text-sm text-base-content/70">
+              Phase 3: Frontend Implementation
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-flow-col gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="status status-success"></div>
+          <span>Ready</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            ></path>
+          </svg>
+          <span>Real-time Updates</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            ></path>
+          </svg>
+          <span>Secure</span>
+        </div>
       </div>
     </footer>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast toast-top toast-end z-50">
+      <!-- Dynamic toasts will be inserted here -->
+    </div>
+
+    <!-- Global Modals Container -->
+    <div id="modals-container">
+      <!-- Dynamic modals will be inserted here -->
+    </div>
 
     <!-- Scripts -->
     <script src="utils/api.js"></script>
